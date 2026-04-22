@@ -1,0 +1,37 @@
+<nav class="navbar navbar-expand-lg border-bottom mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-semibold" routerLink="/">
+      <i class="bi bi-bar-chart-fill me-2"></i>99x Assessment by TVA
+    </a>
+
+    @if (auth.isAuthenticated()) {
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav me-auto">
+          @if (auth.isAdmin()) {
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/upload" routerLinkActive="active">Upload</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/reports" routerLinkActive="active">Reports</a>
+            </li>
+          } @else {
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/balances" routerLinkActive="active">Balances</a>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    <div class="d-flex align-items-center gap-2">
+      <button type="button" class="btn btn-outline-secondary btn-sm" (click)="onToggleTheme()"
+              [title]="theme.theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'">
+        <i class="bi" [class.bi-sun-fill]="theme.theme() === 'dark'" [class.bi-moon-stars-fill]="theme.theme() === 'light'"></i>
+      </button>
+      @if (auth.isAuthenticated()) {
+        <span class="text-body-secondary small d-none d-md-inline">{{ auth.displayName() }}</span>
+        <button type="button" class="btn btn-outline-danger btn-sm" (click)="onLogout()">Logout</button>
+      }
+    </div>
+  </div>
+</nav>

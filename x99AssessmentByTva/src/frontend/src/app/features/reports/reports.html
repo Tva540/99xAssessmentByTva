@@ -1,0 +1,82 @@
+<div class="container-fluid py-3">
+  <div class="d-flex flex-wrap align-items-end justify-content-between mb-4 gap-3">
+    <div>
+      <h2 class="mb-0">Annual Summary</h2>
+      @if (summary(); as s) {
+        <div class="text-body-secondary">Year {{ s.year }}</div>
+      }
+    </div>
+
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <label class="form-label mb-0 me-1">Year</label>
+      <select class="form-select" style="min-width: 120px"
+              [(ngModel)]="selectedYear" [ngModelOptions]="{standalone: true}"
+              (change)="onYearChange()">
+        @for (y of availableYears(); track y) {
+          <option [ngValue]="y">{{ y }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="alert alert-danger">{{ errorMessage() }}</div>
+  }
+
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border"></div>
+    </div>
+  } @else if (periods().length === 0) {
+    <div class="text-center py-5 text-body-secondary">
+      <i class="bi bi-inbox fs-1"></i>
+      <p class="mt-2">No balance data has been uploaded yet.</p>
+    </div>
+  } @else if (summary(); as s) {
+    <div class="card shadow-sm">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+              <tr>
+                <th scope="col" class="text-nowrap">Month</th>
+                @for (a of s.accounts; track a.accountId) {
+                  <th scope="col" class="text-end text-nowrap">{{ a.name }}</th>
+                }
+                <th scope="col" class="text-end text-nowrap fw-semibold">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of s.months; track row.month) {
+                <tr>
+                  <td class="fw-medium text-nowrap">{{ row.monthLabel }}</td>
+                  @for (amt of row.amounts; track $index) {
+                    <td class="text-end text-nowrap" [class.text-danger]="isNegative(amt)">
+                      {{ formatAmount(amt) }}
+                    </td>
+                  }
+                  <td class="text-end text-nowrap fw-semibold" [class.text-danger]="isNegative(row.monthTotal)">
+                    {{ formatAmount(row.monthTotal) }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+            <tfoot class="table-light">
+              <tr>
+                <th scope="row" class="text-nowrap">Year total</th>
+                @for (a of s.accounts; track a.accountId) {
+                  <td class="text-end text-nowrap fw-semibold" [class.text-danger]="isNegative(a.annualTotal)">
+                    {{ formatAmount(a.annualTotal) }}
+                  </td>
+                }
+                <td class="text-end text-nowrap fw-bold" [class.text-danger]="isNegative(s.grandTotal)">
+                  {{ formatAmount(s.grandTotal) }}
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  }
+</div>

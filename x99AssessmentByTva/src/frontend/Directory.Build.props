@@ -1,0 +1,4 @@
+<Project>
+  <!-- Intentionally empty: stops MSBuild from walking up to the repo-root Directory.Build.props,
+       which sets TargetFramework=net10.0 and breaks the JavaScript SDK's NuGet restore. -->
+</Project>

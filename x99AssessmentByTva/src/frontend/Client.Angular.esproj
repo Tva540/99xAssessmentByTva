@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.4902498">
+  <PropertyGroup>
+    <StartupCommand>npm start</StartupCommand>
+    <JavaScriptTestFramework>Jasmine</JavaScriptTestFramework>
+    <!-- Allows the build (or compile) script located on package.json to run on Build -->
+    <ShouldRunBuildScript>false</ShouldRunBuildScript>
+    <!-- Folder where production build objects will be placed -->
+    <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\x99assessmentbytva.client\browser\</BuildOutputFolder>
+  </PropertyGroup>
+
+  <!--
+    Runs `npm install` if node_modules is missing, so a fresh clone builds
+    without requiring the developer to remember the step.
+  -->
+  <Target Name="EnsureClientDependenciesInstalled"
+          BeforeTargets="Build"
+          Condition="!Exists('$(MSBuildProjectDirectory)\node_modules')">
+    <Message Text="node_modules not found — running npm install..." Importance="high" />
+    <Exec Command="npm install" WorkingDirectory="$(MSBuildProjectDirectory)" />
+  </Target>
+
+  <!--
+    Runs `npm test` automatically after this project builds, satisfying the
+    assessment requirement that build tasks run all unit tests. SkipTests='true'
+    opts out: `dotnet build /p:SkipTests=true`.
+  -->
+  <Target Name="RunClientUnitTestsAfterBuild"
+          AfterTargets="Build"
+          Condition="'$(SkipTests)' != 'true'">
+    <Message Text="Running client-side unit tests..." Importance="high" />
+    <Exec Command="npm test" WorkingDirectory="$(MSBuildProjectDirectory)" />
+  </Target>
+</Project>

@@ -1,0 +1,68 @@
+<div class="container py-3">
+  <div class="d-flex flex-wrap align-items-end justify-content-between mb-4 gap-3">
+    <div>
+      <h2 class="mb-0">Account Balances</h2>
+      @if (monthly(); as m) {
+        <div class="text-body-secondary">{{ m.periodLabel }}</div>
+      }
+    </div>
+
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <select class="form-select" style="min-width: 140px"
+              [(ngModel)]="selectedMonth" [ngModelOptions]="{standalone: true}">
+        <option [ngValue]="null" disabled>Month</option>
+        @for (m of months; track m.value) {
+          <option [ngValue]="m.value">{{ m.name }}</option>
+        }
+      </select>
+
+      <select class="form-select" style="min-width: 120px"
+              [(ngModel)]="selectedYear" [ngModelOptions]="{standalone: true}">
+        <option [ngValue]="null" disabled>Year</option>
+        @for (y of years(); track y) {
+          <option [ngValue]="y">{{ y }}</option>
+        }
+      </select>
+
+      <button type="button" class="btn btn-primary"
+              [disabled]="selectedYear === null || selectedMonth === null || loading()"
+              (click)="onSearch()">
+        Search
+      </button>
+    </div>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="alert alert-danger">{{ errorMessage() }}</div>
+  }
+
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border"></div>
+    </div>
+  }
+
+  @if (monthly(); as m) {
+    <div class="row g-3">
+      @for (b of m.balances; track b.accountId) {
+        <div class="col-12 col-md-6 col-lg-4 col-xl">
+          <div class="card balance-card h-100 shadow-sm">
+            <div class="card-body text-center">
+              <h6 class="text-body-secondary text-uppercase small mb-3">{{ b.name }}</h6>
+              <div class="balance-amount" [class.negative]="(b.amount ?? 0) < 0">
+                {{ formatAmount(b.amount) }}
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (periods().length === 0 && !loading()) {
+    <div class="text-center py-5 text-body-secondary">
+      <i class="bi bi-inbox fs-1"></i>
+      <p class="mt-2">No balance data available yet. Ask an admin to upload a file.</p>
+    </div>
+  }
+</div>

@@ -1,0 +1,45 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h3 class="card-title text-center mb-4">
+            <i class="bi bi-lock-fill me-2"></i>Sign In
+          </h3>
+
+          <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <label class="form-label" for="email">Email</label>
+              <input id="email" type="email" class="form-control" formControlName="email" autocomplete="username">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="password">Password</label>
+              <input id="password" type="password" class="form-control" formControlName="password" autocomplete="current-password">
+            </div>
+
+            @if (errorMessage()) {
+              <div class="alert alert-danger py-2">{{ errorMessage() }}</div>
+            }
+
+            <button type="submit" class="btn btn-primary w-100" [disabled]="form.invalid || loading()">
+              @if (loading()) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+              }
+              Sign In
+            </button>
+          </form>
+
+          <hr class="my-4">
+          <div class="text-center small">
+            Don't have an account? <a routerLink="/register">Create one</a>
+          </div>
+          <div class="mt-2 small text-body-secondary text-center">
+            <div><strong>Admin:</strong> admin&#64;jondell.local / Admin&#64;12345</div>
+            <div><strong>Viewer:</strong> viewer&#64;jondell.local / Viewer&#64;12345</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

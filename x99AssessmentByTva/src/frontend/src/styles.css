@@ -1,0 +1,17 @@
+html, body { height: 100%; }
+body { min-height: 100vh; }
+
+[data-bs-theme="dark"] body {
+  background-color: #0e1117;
+  color: #e6edf3;
+}
+
+.balance-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.balance-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+.balance-amount { font-size: 1.75rem; font-weight: 600; }
+.balance-amount.negative { color: #dc3545; }

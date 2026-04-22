@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk;Microsoft.NET.Sdk.Publish">
+
+  <PropertyGroup>
+    <RootNamespace>x99AssessmentByTva.Application.UnitTests</RootNamespace>
+    <AssemblyName>x99AssessmentByTva.Application.UnitTests</AssemblyName>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="MiniExcel" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\backend\Application\Application.csproj" />
+    <ProjectReference Include="..\..\src\backend\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\backend\Domain\Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Settings.job">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <!--
+    Runs the unit tests automatically after this project builds, satisfying the
+    assessment requirement that build tasks run all unit tests.
+
+      dotnet build            ⇒ tests run once (via this target)
+      dotnet test             ⇒ tests run twice (this target + VSTest target); harmless overhead
+      dotnet build -p:SkipTests=true ⇒ tests skipped
+  -->
+  <Target Name="RunUnitTestsAfterBuild" AfterTargets="Build" Condition="'$(SkipTests)' != 'true'">
+    <Message Text="Running server-side unit tests..." Importance="high" />
+    <Exec Command="dotnet test &quot;$(MSBuildProjectFullPath)&quot; --no-build --nologo --verbosity minimal" WorkingDirectory="$(MSBuildProjectDirectory)" />
+  </Target>
+
+</Project>
