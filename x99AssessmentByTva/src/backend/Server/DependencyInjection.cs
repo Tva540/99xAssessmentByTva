@@ -1,8 +1,11 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using x99AssessmentByTva.Application.Common.Interfaces;
 using x99AssessmentByTva.Server.Infrastructure;
 using x99AssessmentByTva.Server.Services;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace x99AssessmentByTva.Server;
 
 public static class WebDependencyInjection
 {
@@ -44,5 +47,28 @@ public static class WebDependencyInjection
                 .AllowAnyMethod()
                 .AllowCredentials());
         });
+
+        builder.Services
+            .AddAuthentication(opts =>
+            {
+                opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(opts =>
+            {
+                opts.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SigningKey"]!)),
+                    ClockSkew = TimeSpan.FromMinutes(1)
+                };
+            });
+
+        builder.Services.AddAuthorization();
     }
 }

@@ -1,11 +1,9 @@
 using Azure.Identity;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
-using System.Text;
 using x99AssessmentByTva.Application;
 using x99AssessmentByTva.Infrastructure;
 using x99AssessmentByTva.Infrastructure.Data;
+using x99AssessmentByTva.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,29 +22,6 @@ builder.Services.AddApplicationInsightsTelemetry();
 builder.AddApplicationServices();
 builder.AddInfrastructureServices();
 builder.AddWebServices();
-
-builder.Services
-    .AddAuthentication(opts =>
-    {
-        opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(opts =>
-    {
-        opts.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SigningKey"]!)),
-            ClockSkew = TimeSpan.FromMinutes(1)
-        };
-    });
-
-builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
